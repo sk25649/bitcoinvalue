@@ -1,8 +1,10 @@
 package austin.siwan.bitcoinvalue.bitcoinvalue;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -32,6 +34,9 @@ public class Main extends Activity {
 
         bitcoinValueDisplay = (TextView)findViewById(R.id.bitcoinValueDisplay);
         bitcoinTimestamp = (TextView)findViewById(R.id.bitcoinTimestamp);
+
+        //action bar support
+        ActionBar actionBar = getActionBar();
     }
 
     @Override
@@ -44,8 +49,11 @@ public class Main extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_action_bar_menu, menu);
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -54,10 +62,15 @@ public class Main extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id) {
+            case R.id.refresh:
+                GetCurrentBitcoinValue();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
 
