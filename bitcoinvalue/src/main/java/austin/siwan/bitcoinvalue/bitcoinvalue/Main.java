@@ -68,7 +68,6 @@ public class Main extends Activity {
                 try {
                     bitcoin = bitcoinValueAsyncTask.get(1000, TimeUnit.MILLISECONDS);
                     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss zzz");
-//                    TimeZone central = TimeZone.getTimeZone("America/Chicago");
                     TimeZone timeZone = TimeZone.getDefault();
                     dateFormat.setTimeZone(timeZone);
                     Date date = new Date();

@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="bitcoin_value">1 Bitcoin = </string>
     <string name="timestamp">Last Updated: </string>
+    <string name="poweredBy">Powered By</string>
 
 </resources>
