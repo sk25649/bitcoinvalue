@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BitcoinValue</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="bitcoin_value">1 Bitcoin = </string>
+    <string name="timestamp">Last Updated: </string>
+
+</resources>
