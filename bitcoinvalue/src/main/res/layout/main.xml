@@ -14,15 +14,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"/>
+
+    <EditText
+        android:id="@+id/bitcoinConversion"
+        android:text="@string/default_bitcoin"
+        android:layout_width="75dp"
+        android:textSize="20dp"
+        android:singleLine="true"
+        android:imeOptions="actionSearch"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bitcoinTimestamp"/>
 
     <TextView
         android:id="@+id/bitcoinValueDisplay"
         android:text="@string/bitcoin_value"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/bitcoinTimestamp"/>
+        android:layout_above="@id/bitcoinTimestamp"
+        android:layout_toRightOf="@id/bitcoinConversion"/>
+
+    <Button
+        android:id="@+id/calculateBitcoinValue"
+        android:text="Calculate"
+        android:layout_below="@id/bitcoinTimestamp"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/poweredBy"

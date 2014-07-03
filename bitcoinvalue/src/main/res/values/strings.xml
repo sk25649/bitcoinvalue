@@ -4,9 +4,10 @@
     <string name="app_name">BitcoinValue</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="bitcoin_value">1 Bitcoin = </string>
+    <string name="bitcoin_value"> bitcoin = </string>
     <string name="timestamp">Last Updated: </string>
     <string name="poweredBy">Powered By</string>
     <string name="action_refresh">Refresh</string>
+    <string name="default_bitcoin">1</string>
 
 </resources>

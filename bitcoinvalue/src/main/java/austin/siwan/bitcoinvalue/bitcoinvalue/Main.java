@@ -3,10 +3,16 @@ package austin.siwan.bitcoinvalue.bitcoinvalue;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,6 +32,8 @@ public class Main extends Activity {
     private BitcoinValueAPIAsyncTask bitcoinValueAsyncTask;
     private TextView bitcoinValueDisplay, bitcoinTimestamp;
     private Bitcoin bitcoin;
+    private Button calcualteBitcoinValue;
+    private EditText bitcoinConversion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +42,25 @@ public class Main extends Activity {
 
         bitcoinValueDisplay = (TextView)findViewById(R.id.bitcoinValueDisplay);
         bitcoinTimestamp = (TextView)findViewById(R.id.bitcoinTimestamp);
+        calcualteBitcoinValue = (Button)findViewById(R.id.calculateBitcoinValue);
+        bitcoinConversion = (EditText)findViewById(R.id.bitcoinConversion);
+
+        calcualteBitcoinValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GetCurrentBitcoinValue();
+            }
+        });
+
+        bitcoinConversion.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_SEARCH) {
+                    GetCurrentBitcoinValue();
+                }
+                    return false;
+            }
+        });
 
         //action bar support
         ActionBar actionBar = getActionBar();
@@ -51,8 +78,6 @@ public class Main extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_action_bar_menu, menu);
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -85,8 +110,11 @@ public class Main extends Activity {
                     dateFormat.setTimeZone(timeZone);
                     Date date = new Date();
                     String dateInStr = dateFormat.format(date).toString();
-                    bitcoinValueDisplay.setText(String.format("1 Bitcoin = %s USD",
-                            bitcoin.getLast()));
+                    String desiredAmount = bitcoinConversion.getText().toString();
+                    double calculatedUSDEqualivent =
+                            calculateBitcoinUSDEqualivent(desiredAmount, bitcoin.getLast());
+                    bitcoinValueDisplay.setText(String.format(" Bitcoin = %.2f USD",
+                            calculatedUSDEqualivent));
                     bitcoinTimestamp.setText(String.format("Last Updated: %s",
                             dateInStr));
                 } catch (InterruptedException e) {
@@ -99,5 +127,24 @@ public class Main extends Activity {
             }
         }, this);
         bitcoinValueAsyncTask.execute();
+    }
+
+    private double calculateBitcoinUSDEqualivent(String desireBitcoinAmount, String bitcoinInUsd) {
+        double nil = 0.00;
+
+        try {
+            double desired = Double.parseDouble(desireBitcoinAmount);
+            double usd = Double.parseDouble(bitcoinInUsd);
+
+            if(desired == nil) {
+                return nil;
+            }
+
+            return(desired*usd);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter valid number", Toast.LENGTH_SHORT).show();
+        }
+
+        return nil;
     }
 }
