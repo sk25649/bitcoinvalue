@@ -1,6 +1,5 @@
 package austin.siwan.bitcoinvalue.bitcoinvalue;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +33,9 @@ public class Main extends Activity {
     private TextView bitcoinValueDisplay, bitcoinTimestamp;
     private Bitcoin bitcoin;
     private Button calcualteBitcoinValue;
-    private EditText bitcoinConversion;
+    private EditText amountEntered;
+    private String currencyCode;
+    private Spinner currencyCodeSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,27 +45,32 @@ public class Main extends Activity {
         bitcoinValueDisplay = (TextView)findViewById(R.id.bitcoinValueDisplay);
         bitcoinTimestamp = (TextView)findViewById(R.id.bitcoinTimestamp);
         calcualteBitcoinValue = (Button)findViewById(R.id.calculateBitcoinValue);
-        bitcoinConversion = (EditText)findViewById(R.id.bitcoinConversion);
+        amountEntered = (EditText)findViewById(R.id.amountEntered);
+        currencyCodeSpinner = (Spinner)findViewById(R.id.currency_code);
+
+        currencyCode = "USD";
 
         calcualteBitcoinValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                currencyCode = currencyCodeSpinner.getSelectedItem().toString();
                 GetCurrentBitcoinValue();
             }
         });
 
-        bitcoinConversion.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        amountEntered.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_SEARCH) {
+                if (i == EditorInfo.IME_ACTION_SEARCH) {
+                    currencyCode = currencyCodeSpinner.getSelectedItem().toString();
                     GetCurrentBitcoinValue();
                 }
-                    return false;
+                return false;
             }
         });
 
         //action bar support
-        ActionBar actionBar = getActionBar();
+//        ActionBar actionBar = getActionBar();
     }
 
     @Override
@@ -105,16 +112,19 @@ public class Main extends Activity {
             public void onComplete() {
                 try {
                     bitcoin = bitcoinValueAsyncTask.get(1000, TimeUnit.MILLISECONDS);
-                    DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss zzz");
-                    TimeZone timeZone = TimeZone.getDefault();
-                    dateFormat.setTimeZone(timeZone);
-                    Date date = new Date();
-                    String dateInStr = dateFormat.format(date).toString();
-                    String desiredAmount = bitcoinConversion.getText().toString();
+                    String dateInStr = getDeviceTime();
+                    String desiredAmount = amountEntered.getText().toString();
                     double calculatedUSDEqualivent =
                             calculateBitcoinUSDEqualivent(desiredAmount, bitcoin.getLast());
-                    bitcoinValueDisplay.setText(String.format(" Bitcoin = %.2f USD",
-                            calculatedUSDEqualivent));
+                    String[] symbols = getResources().getStringArray(R.array.currency_symbol);
+                    int pos = currencyCodeSpinner.getSelectedItemPosition();
+                    if(currencyCode.equals("CAD") || currencyCode.equals("AUD")) {
+                        bitcoinValueDisplay.setText(String.format("%s Bitcoin = %.2f %s",
+                                desiredAmount, calculatedUSDEqualivent, symbols[pos]));
+                    } else {
+                        bitcoinValueDisplay.setText(String.format("%s Bitcoin = %s%.2f",
+                                desiredAmount, symbols[pos], calculatedUSDEqualivent));
+                    }
                     bitcoinTimestamp.setText(String.format("Last Updated: %s",
                             dateInStr));
                 } catch (InterruptedException e) {
@@ -125,7 +135,7 @@ public class Main extends Activity {
                     e.printStackTrace();
                 }
             }
-        }, this);
+        }, this, currencyCode);
         bitcoinValueAsyncTask.execute();
     }
 
@@ -146,5 +156,13 @@ public class Main extends Activity {
         }
 
         return nil;
+    }
+
+    private String getDeviceTime() {
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss zzz");
+        TimeZone timeZone = TimeZone.getDefault();
+        dateFormat.setTimeZone(timeZone);
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 }

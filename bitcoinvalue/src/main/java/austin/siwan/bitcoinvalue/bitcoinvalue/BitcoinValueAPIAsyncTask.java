@@ -15,17 +15,20 @@ public class BitcoinValueAPIAsyncTask extends AsyncTask<Void, Void, Bitcoin> {
 
     private Main.Callback mCallback;
     private Context context;
+    private String currencyCode;
 
-    public BitcoinValueAPIAsyncTask(Main.Callback callback, Context context) {
+    public BitcoinValueAPIAsyncTask(Main.Callback callback, Context context, String currencyCode) {
         mCallback = callback;
         this.context = context;
+        this.currencyCode = currencyCode;
     }
 
     @Override
     protected Bitcoin doInBackground(Void... voids) {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String search_usd = "https://api.bitcoinaverage.com/ticker/global/USD/";
+        String search_usd =
+                String.format("https://api.bitcoinaverage.com/ticker/global/%s", currencyCode);
         String result = RestClient.connect(search_usd);
         JsonElement json = new JsonParser().parse(result);
         Bitcoin bitcoin = gson.fromJson(json, Bitcoin.class);
